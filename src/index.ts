@@ -1,8 +1,12 @@
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory';
+import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
 import { verifyKey, InteractionResponseType } from 'discord-interactions';
 import { COMMANDS } from './constants';
 import { DiscordClient } from './client/discord';
+import * as schema from './drizzle/schema';
+import { UserRepository } from './repository/user_repository';
+import { BookMarkRepository } from './repository/bookmark_repository';
 
 export type Bindings = {
   DISCORD_PUBLIC_KEY: string,
@@ -35,6 +39,13 @@ export const verifyMiddleware = createMiddleware<{ Bindings: Bindings }>(async (
 
 app.post('/', verifyMiddleware, async (c) => {
   const body = await c.req.json();
+
+  const db = drizzle(c.env.D1_DATABASE, { schema: schema });
+
+  const repositories = {
+    userRepository: new UserRepository(db),
+    bookmarkRepository: new BookMarkRepository(db),
+  }
 
   const client = new DiscordClient(c.env.DISCORD_BOT_TOKEN);
 

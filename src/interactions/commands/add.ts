@@ -17,8 +17,9 @@ const handler = async ({
 	}
 
 	const member = intentObj.member;
-	const url = intentObj.data?.options.find((option) => option.name === "url")
-		?.value as string;
+	const url = intentObj.data?.options
+		?.find((option) => option.name === "add")
+		?.options?.find((option) => option.name === "url")?.value;
 	if (!url) {
 		return buildErrorResponse(member.user.id);
 	}

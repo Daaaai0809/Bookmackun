@@ -27,9 +27,9 @@ const handler = async ({
 		return buildErrorResponse(intentObj.member.user.id);
 	}
 
-	const bookMarkId = intentObj.data?.options.find(
-		(option) => option.name === "id",
-	)?.value;
+	const bookMarkId = intentObj.data?.options
+		?.find((option) => option.name === "remove")
+		?.options?.find((option) => option.name === "id")?.value;
 	if (!bookMarkId) {
 		console.log("ブックマークIDが見つかりませんでした");
 		return buildErrorResponse(intentObj.member.user.id);

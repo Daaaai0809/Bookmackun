@@ -35,9 +35,9 @@ const handler = async ({
 		return buildErrorResponse(intentObj.member.user.id);
 	}
 
-	const bookMarkId = intentObj.data?.options.find(
-		(option) => option.name === "id",
-	)?.value;
+	const bookMarkId = intentObj.data?.options
+		?.find((option) => option.name === "read")
+		?.options?.find((option) => option.name === "id")?.value;
 	if (!bookMarkId) {
 		console.log("bookMarkId not found");
 		return buildErrorResponse(intentObj.member.user.id);

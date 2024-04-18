@@ -55,7 +55,7 @@ app.post('/', verifyMiddleware, async (c) => {
   const client = new DiscordClient(c.env.DISCORD_BOT_TOKEN);
 
   try {
-    return await handleSlashCommands({
+    return c.json(await handleSlashCommands({
       intentObj: body,
       repositories,
       client,
@@ -66,7 +66,7 @@ app.post('/', verifyMiddleware, async (c) => {
         removeCommand,
         helpCommand,
       ],
-    });
+    }));
   } catch (e) {
     console.error(e);
 

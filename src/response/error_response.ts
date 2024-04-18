@@ -1,6 +1,6 @@
 import {
-	InteractionResponseType,
-	type APIInteractionResponseChannelMessageWithSource,
+  InteractionResponseType,
+  type APIInteractionResponseChannelMessageWithSource,
 } from "discord-api-types/v10";
 
 const errorMessage = () => `
@@ -9,21 +9,21 @@ const errorMessage = () => `
 `;
 
 type ErrorResponse = {
-	type: number;
-	data: {
-		username: string;
-		content: string;
-	};
+  type: number;
+  data: {
+    username: string;
+    content: string;
+  };
 };
 
 export const buildErrorResponse = (
-	username: string,
+  username: string,
 ): APIInteractionResponseChannelMessageWithSource => {
-	return {
-		type: InteractionResponseType.ChannelMessageWithSource,
-		data: {
-			username,
-			content: errorMessage(),
-		},
-	} as ErrorResponse;
+  return {
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: {
+      username,
+      content: errorMessage(),
+    },
+  } as ErrorResponse;
 };

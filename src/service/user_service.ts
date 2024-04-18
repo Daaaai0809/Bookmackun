@@ -1,12 +1,16 @@
 import type { Repositories } from "@/types";
 
-export const findOrCreate = async (discordUserId: string, username: string, userRepository: Repositories['userRepository']) => {
-    const user = await userRepository.findUserByDiscordUserId(discordUserId);
-    if (user) {
-        return user;
-    }
+export const findOrCreate = async (
+	discordUserId: string,
+	username: string,
+	userRepository: Repositories["userRepository"],
+) => {
+	const user = await userRepository.findUserByDiscordUserId(discordUserId);
+	if (user) {
+		return user;
+	}
 
-    const res = await userRepository.createUser(discordUserId, username);
+	const res = await userRepository.createUser(discordUserId, username);
 
 	const userId = res.meta.last_row_id;
 

@@ -11,7 +11,3 @@ pnpm-lock.yaml
 bun.lockb
 
 wrangler.toml
-
-add_commands.ts
-add_commands.js
-commands.json

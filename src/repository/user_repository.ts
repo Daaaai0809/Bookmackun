@@ -13,6 +13,16 @@ export class UserRepository extends BaseRepository {
             }
         });
     }
+    async findUserById(id: number) {
+        return await this.db.query.users.findFirst({
+            where: ((users, { eq }) => eq(users.id, id)),
+            columns: {
+                id: true,
+                discordUserId: true,
+                name: true,
+            }
+        });
+    }
     async createUser(discordUserId: string, name: string) {
         return await this.db.insert(users).values({
             discordUserId,

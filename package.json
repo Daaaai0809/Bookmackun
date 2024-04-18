@@ -7,8 +7,18 @@
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "check": "pnpm run check:format && pnpm run check:lint",
+    "check:format": "biome format src/*",
+    "check:lint": "biome lint src/*",
+    "fix": "pnpm run fix:style && pnpm run fix:lint",
+    "fix:style": "biome format --write src/*",
+    "fix:lint": "biome lint --apply src/*",
+    "add:command": "dotenv -e scripts/.env node ./dist/scripts/add_commands.js",
     "generate:wrangler": "twrangler build",
-    "generate:migrations": "drizzle-kit generate:sqlite --out ./drizzle/migrations --schema src/drizzle/schema.ts"
+    "generate:migrations": "drizzle-kit generate:sqlite --out ./migrations --schema src/drizzle/schema.ts",
+    "migrate:up": "drizzle-kit up:sqlite --out migrations",
+    "migrate:local": "wrangler d1 migrations apply bookmackun --local",
+    "migrate:dev": "wrangler d1 migrations apply bookmackun --remote"
   },
   "dependencies": {
     "better-sqlite3": "^9.5.0",
@@ -20,6 +30,7 @@
     "twrangler": "^0.0.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.7.0",
     "@cloudflare/workers-types": "^4.20240403.0",
     "drizzle-kit": "^0.20.14",
     "vitest": "^1.5.0",

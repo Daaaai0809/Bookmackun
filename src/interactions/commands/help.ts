@@ -1,5 +1,5 @@
-import { HELP_COMMAND } from '@/constants';
-import { buildHelpCommandResponse } from '@/response/help_command_response';
+import { HELP_COMMAND } from "@/constants";
+import { buildHelpCommandResponse } from "@/response/help_command_response";
 
 const content = () => `
     使い方 \n
@@ -11,11 +11,10 @@ const content = () => `
 `;
 
 const handler = async () => {
-    return buildHelpCommandResponse(content());
-}
+	return buildHelpCommandResponse(content());
+};
 
 export const helpCommand = {
-    commandName: HELP_COMMAND,
-    handler,
-}
-
+	commandName: HELP_COMMAND,
+	handler,
+};

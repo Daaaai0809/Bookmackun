@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { drizzle } from "drizzle-orm/d1";
@@ -12,6 +15,10 @@ import { helpCommand } from "./interactions/commands/help";
 import { listCommand } from "./interactions/commands/list";
 import { readCommand } from "./interactions/commands/read";
 import { removeCommand } from "./interactions/commands/remove";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
 
 export type Bindings = {
   DISCORD_PUBLIC_KEY: string;

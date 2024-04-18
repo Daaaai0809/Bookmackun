@@ -55,7 +55,7 @@ app.post('/', verifyMiddleware, async (c) => {
   const client = new DiscordClient(c.env.DISCORD_BOT_TOKEN);
 
   try {
-    await handleSlashCommands({
+    return await handleSlashCommands({
       intentObj: body,
       repositories,
       client,
@@ -77,13 +77,6 @@ app.post('/', verifyMiddleware, async (c) => {
       }
     });
   }
-
-  return c.json({
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      content: `Hello, World!`
-    }
-  });
 })
 
 export default app

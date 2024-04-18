@@ -11,10 +11,10 @@ const content = () => `
 `;
 
 const handler = async () => {
-	return buildHelpCommandResponse(content());
+  return buildHelpCommandResponse(content());
 };
 
 export const helpCommand = {
-	commandName: HELP_COMMAND,
-	handler,
+  commandName: HELP_COMMAND,
+  handler,
 };

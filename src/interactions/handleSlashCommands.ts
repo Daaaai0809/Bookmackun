@@ -9,9 +9,12 @@ export type SlashCommandObj = APIBaseInteraction<
 	InteractionType.ApplicationCommand,
 	{
 		name: string;
-		options: {
+		options?: {
 			name: string;
-			value: string;
+			options?: {
+				name: string;
+				value: string;
+			}[];
 		}[];
 	}
 >;
@@ -38,7 +41,7 @@ export const handleSlashCommands = async ({
 	}[];
 }) => {
 	for (const command of commands) {
-		if (command.commandName === intentObj.data?.name) {
+		if (command.commandName === intentObj.data?.options?.[0]?.name) {
 			return await command.handler({
 				intentObj,
 				repository: repositories,

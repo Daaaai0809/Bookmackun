@@ -6,14 +6,14 @@ import type {
 } from "discord-api-types/v10";
 
 export type SlashCommandObj = APIBaseInteraction<
-	InteractionType.ApplicationCommand,
-	{
-		name: string;
-		options: {
-			name: string;
-			value: string | number;
-		}[];
-	}
+    InteractionType.ApplicationCommand,
+    {
+        name: string;
+        options: {
+            name: string;
+            value: string;
+        }[];
+    }
 >;
 
 export const handleSlashCommands = async ({

@@ -12,37 +12,29 @@ const handler = async ({
 	intentObj: SlashCommandObj;
 	repository: Repositories;
 }) => {
-	if (!intentObj.member) {
-		return buildErrorResponse("エラーが発生しました");
-	}
+    if (!intentObj.member) {
+        throw new Error('メンバーが見つかりませんでした');
+    }
 
 	const member = intentObj.member;
 
-	const user = await findOrCreate(member.user.id, userRepository);
-	if (!user) {
-		return buildErrorResponse("エラーが発生しました");
-	}
+    const user = await findOrCreate(member.user.id, member.user.username, userRepository);
+    if (!user) {
+        return buildErrorResponse(intentObj.member.user.id);
+    }
 
-	const bookMarkId = intentObj.data?.options.find(
-		(option) => option.name === "id",
-	)?.value as number;
-	if (!bookMarkId) {
-		return buildErrorResponse("IDは必須です");
-	}
+    const bookMarkId = intentObj.data?.options.find((option) => option.name === 'id')?.value;
+    if (!bookMarkId) {
+        console.log('ブックマークIDが見つかりませんでした')
+        return buildErrorResponse(intentObj.member.user.id);
+    }
 
-	bookMarkRepository
-		.deleteBookmark(bookMarkId)
-		.then(() => {
-			return buildRemoveCommandResponse(
-				member.user.id,
-				"ブックマークを削除しました",
-			);
-		})
-		.catch(() => {
-			return buildErrorResponse("ブックマークを削除できませんでした");
-		});
+    const res = await bookMarkRepository.deleteBookmark(Number(bookMarkId))
+    if (res.error) {
+        return buildErrorResponse(intentObj.member.user.id);
+    }
 
-	return buildErrorResponse("ブックマークを削除できませんでした");
+    return buildRemoveCommandResponse('ブックマークを削除しました', intentObj.member.user.id);
 };
 
 export const removeCommand = {

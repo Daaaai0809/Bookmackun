@@ -11,15 +11,12 @@ type RemoveCommandResponse = {
 	};
 };
 
-export const buildRemoveCommandResponse = (
-	username: string,
-	content: string,
-): APIInteractionResponseChannelMessageWithSource => {
-	return {
-		type: InteractionResponseType.ChannelMessageWithSource,
-		data: {
-			username,
-			content,
-		},
-	} as RemoveCommandResponse;
-};
+export const buildRemoveCommandResponse = (content: string, username: string): APIInteractionResponseChannelMessageWithSource => {
+    return {
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data: {
+            username,
+            content,
+        },
+    } as RemoveCommandResponse;
+}

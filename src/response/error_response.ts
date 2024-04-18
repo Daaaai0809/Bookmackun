@@ -5,7 +5,7 @@ import {
 
 const errorMessage = () => `
     エラーが発生しました。\n
-    もう一度やり直してください。
+もう一度やり直してください。
 `;
 
 type ErrorResponse = {

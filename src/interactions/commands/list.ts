@@ -6,11 +6,13 @@ import { findOrCreate } from "@/service/user_service";
 import { buildListCommandResponse } from "@/response/list_command_response";
 import { buildErrorResponse } from "@/response/error_response";
 
-const content = () => {
-	const today = dayjs().format("YYYY-MM-DD");
+const content = (bookmarkList: string[]) => {
+    const today = dayjs().format('YYYY-MM-DD');
 
-	const text = `
-        ${today}までの未読ブックマーク一覧です\n
+    const text = `
+    ${today}までに登録された未読ブックマーク一覧です\n
+[id]　|　[url] \n
+${bookmarkList.join('\n')}
     `;
 
 	return text;
@@ -23,26 +25,23 @@ const handler = async ({
 	intentObj: SlashCommandObj;
 	repository: Repositories;
 }) => {
-	if (!intentObj.member) {
-		return buildErrorResponse("メンバーが見つかりませんでした");
-	}
+    if (!intentObj.member) {
+        throw new Error('メンバーが見つかりませんでした');
+    }
 
-	const member = intentObj.member;
+    const member = intentObj.member;
 
-	const user = await findOrCreate(member.user.id, userRepository);
-	if (!user) {
-		return buildErrorResponse("ユーザーが見つかりませんでした");
-	}
+    const user = await findOrCreate(member.user.id, member.user.username, userRepository);
+    if (!user) {
+        return buildErrorResponse(member.user.id);
+    }
 
-	const bookmarks = await bookMarkRepository.findUnreadBookmarks(user.id);
-	const embeds = bookmarks.map((bookmark) => {
-		return {
-			url: bookmark.url,
-			description: `期限: ${dayjs(bookmark.expiredAt).format("YYYY-MM-DD")}`,
-		};
-	});
+    const bookmarks = await bookMarkRepository.findUnreadBookmarks(user.id);
+    const bookmarkList = bookmarks.map((bookmark) => {
+        return `${bookmark.id}　|　${bookmark.url}`;
+    });
 
-	return buildListCommandResponse(content(), member.user.id, embeds);
+    return buildListCommandResponse(content(bookmarkList), member.user.id);
 };
 
 export const listCommand = {

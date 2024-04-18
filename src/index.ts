@@ -58,36 +58,29 @@ app.post("/", verifyMiddleware, async (c) => {
 
 	const client = new DiscordClient(c.env.DISCORD_BOT_TOKEN);
 
-	try {
-		await handleSlashCommands({
-			intentObj: body,
-			repositories,
-			client,
-			commands: [
-				addCommand,
-				listCommand,
-				readCommand,
-				removeCommand,
-				helpCommand,
-			],
-		});
-	} catch (e) {
-		console.error(e);
+  try {
+    return c.json(await handleSlashCommands({
+      intentObj: body,
+      repositories,
+      client,
+      commands: [
+        addCommand,
+        listCommand,
+        readCommand,
+        removeCommand,
+        helpCommand,
+      ],
+    }));
+  } catch (e) {
+    console.error(e);
 
-		return c.json({
-			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-			data: {
-				content: "エラーが発生しました",
-			},
-		});
-	}
-
-	return c.json({
-		type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-		data: {
-			content: "Hello, World!",
-		},
-	});
-});
+    return c.json({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: 'エラーが発生しました',
+      }
+    });
+  }
+})
 
 export default app;

@@ -6,11 +6,9 @@ import { findOrCreate } from "@/service/user_service";
 import { buildListCommandResponse } from "@/response/list_command_response";
 import { buildErrorResponse } from "@/response/error_response";
 
-const content = (bookmarkList: string[]) => {
-  const today = dayjs().format("YYYY-MM-DD");
-
+const content = (bookmarkList: string[], today: string) => {
   const text = `
-    ${today}までに登録された未読ブックマーク一覧です\n
+    ${today}までに登録された未読ブックマーク一覧\n
 [id]　|　[url] \n
 ${bookmarkList.join("\n")}
     `;
@@ -45,7 +43,9 @@ const handler = async ({
     return `${bookmark.id}　|　${bookmark.url}`;
   });
 
-  return buildListCommandResponse(content(bookmarkList), member.user.id);
+  const today = dayjs().format("YYYY/MM/DD");
+
+  return buildListCommandResponse(content(bookmarkList, today), member.user.id);
 };
 
 export const listCommand = {

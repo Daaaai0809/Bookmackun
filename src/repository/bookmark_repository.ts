@@ -11,6 +11,7 @@ export class BookMarkRepository extends BaseRepository {
         return await this.db.query.bookmarks.findMany({
             where: ((bookmarks, { eq, and, gt }) => and(eq(bookmarks.isRead, 0), eq(bookmarks.userId, userId), gt(bookmarks.expiredAt, new Date().toISOString()))),
             columns: {
+                id: true,
                 url: true,
                 expiredAt: true,
             },
@@ -75,7 +76,7 @@ export class BookMarkRepository extends BaseRepository {
      */
     async isExistUrl(userId: number, url: string) {
         return await this.db.query.bookmarks.findFirst({
-            where: ((bookmarks, { eq, and, gt }) => and(eq(bookmarks.userId, userId), eq(bookmarks.url, url), gt(bookmarks.expiredAt, new Date().toISOString()))),
+            where: ((bookmarks, { eq, and, gt }) => and(eq(bookmarks.userId, userId), eq(bookmarks.url, url), eq(bookmarks.isRead, 0), gt(bookmarks.expiredAt, new Date().toISOString()))),
             columns: {
                 id: true,
             }

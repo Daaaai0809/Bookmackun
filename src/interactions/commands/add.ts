@@ -13,18 +13,18 @@ const handler = async ({
     repository: Repositories
 }) => {
     if (!intentObj.member) {
-        return buildErrorResponse('メンバーが見つかりませんでした');
+        throw new Error('メンバーが見つかりませんでした');
     }
 
     const member = intentObj.member;
     const url = intentObj.data?.options.find((option) => option.name === 'url')?.value as string;
     if (!url) {
-        return buildErrorResponse('URLは必須です');
+        return buildErrorResponse(member.user.id);
     }
 
-    const user = await findOrCreate(member.user.id, userRepository);
+    const user = await findOrCreate(member.user.id, member.user.username, userRepository);
     if (!user) {
-        return buildErrorResponse('ユーザーが見つかりませんでした');
+        return buildErrorResponse(member.user.id);
     }
 
     const exist = await bookMarkRepository.isExistUrl(user.id, url);

@@ -8,7 +8,7 @@ export type SlashCommandObj = APIBaseInteraction<
         name: string;
         options: {
             name: string;
-            value: string | number;
+            value: string;
         }[];
     }
 >;

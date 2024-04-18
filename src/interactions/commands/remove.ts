@@ -25,18 +25,16 @@ const handler = async ({
 
     const bookMarkId = intentObj.data?.options.find((option) => option.name === 'id')?.value;
     if (!bookMarkId) {
+        console.log('ブックマークIDが見つかりませんでした')
         return buildErrorResponse(intentObj.member.user.id);
     }
 
-    bookMarkRepository.deleteBookmark(Number(bookMarkId))
-    .then(() => {
-        return buildRemoveCommandResponse('ブックマークを削除しました', member.user.id);
-    })
-    .catch(() => {
-        return buildErrorResponse(intentObj.member?.user.id || '');
-    });
+    const res = await bookMarkRepository.deleteBookmark(Number(bookMarkId))
+    if (res.error) {
+        return buildErrorResponse(intentObj.member.user.id);
+    }
 
-    return buildErrorResponse(intentObj.member.user.id);
+    return buildRemoveCommandResponse('ブックマークを削除しました', intentObj.member.user.id);
 };
 
 export const removeCommand = {

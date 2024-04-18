@@ -1,12 +1,17 @@
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory';
-import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
+import { drizzle } from 'drizzle-orm/d1';
 import { verifyKey, InteractionResponseType } from 'discord-interactions';
-import { COMMANDS } from './constants';
 import { DiscordClient } from './client/discord';
 import * as schema from './drizzle/schema';
 import { UserRepository } from './repository/user_repository';
 import { BookMarkRepository } from './repository/bookmark_repository';
+import { handleSlashCommands } from './interactions/handleSlashCommands';
+import { addCommand } from './interactions/commands/add';
+import { helpCommand } from './interactions/commands/help';
+import { listCommand } from './interactions/commands/list';
+import { readCommand } from './interactions/commands/read';
+import { removeCommand } from './interactions/commands/remove';
 
 export type Bindings = {
   DISCORD_PUBLIC_KEY: string,
@@ -44,10 +49,34 @@ app.post('/', verifyMiddleware, async (c) => {
 
   const repositories = {
     userRepository: new UserRepository(db),
-    bookmarkRepository: new BookMarkRepository(db),
+    bookMarkRepository: new BookMarkRepository(db),
   }
 
   const client = new DiscordClient(c.env.DISCORD_BOT_TOKEN);
+
+  try {
+    await handleSlashCommands({
+      intentObj: body,
+      repositories,
+      client,
+      commands: [
+        addCommand,
+        listCommand,
+        readCommand,
+        removeCommand,
+        helpCommand,
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+
+    return c.json({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: 'エラーが発生しました',
+      }
+    });
+  }
 
   return c.json({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

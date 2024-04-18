@@ -8,7 +8,7 @@ type RemoveCommandResponse = {
     };
 };
 
-export const buildRemoveCommandResponse = (username: string, content: string): APIInteractionResponseChannelMessageWithSource => {
+export const buildRemoveCommandResponse = (content: string, username: string): APIInteractionResponseChannelMessageWithSource => {
     return {
         type: InteractionResponseType.ChannelMessageWithSource,
         data: {

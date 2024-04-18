@@ -5,6 +5,13 @@ import { buildReadCommandResponse } from '@/response/read_command_response';
 import { findOrCreate } from '@/service/user_service';
 import { buildErrorResponse } from '@/response/error_response';
 
+const content = (url: string) => {
+    return `
+    以下のブックマークを既読にしました\n
+${url}
+    `;
+}
+
 const handler = async ({
     intentObj,
     repository: { userRepository, bookMarkRepository }
@@ -13,37 +20,29 @@ const handler = async ({
     repository: Repositories
 }) => {
     if (!intentObj.member) {
-        return buildErrorResponse('エラーが発生しました');
+        throw new Error('メンバーが見つかりませんでした');
     }
 
     const member = intentObj.member;
 
-    const user = await findOrCreate(member.user.id, userRepository);
+    const user = await findOrCreate(member.user.id, member.user.username, userRepository);
     if (!user) {
-        return buildErrorResponse('エラーが発生しました');
+        console.log('user not found');
+        return buildErrorResponse(intentObj.member.user.id);
     }
 
-    const bookMarkId = intentObj.data?.options.find((option) => option.name === 'id')?.value as number;
+    const bookMarkId = intentObj.data?.options.find((option) => option.name === 'id')?.value;
     if (!bookMarkId) {
-        return buildErrorResponse('IDは必須です');
+        console.log('bookMarkId not found');
+        return buildErrorResponse(intentObj.member.user.id);
     }
 
-    bookMarkRepository.readBookmark(bookMarkId)
-    .then((res) => {
-        if (res) {
-            return buildReadCommandResponse('ブックマークを既読にしました', member.user.id, [{
-                title: '', // TODO: add したときにタイトルを取得しここで返せるようにする
-                url: res.url,
-            }]);
-        }
+    const res = await bookMarkRepository.readBookmark(Number(bookMarkId));
+    if (res) {
+        return buildReadCommandResponse(content(res.url), member.user.id, []);
+    }
 
-        return buildErrorResponse('ブックマークが見つかりませんでした');
-    })
-    .catch(() => {
-        return buildErrorResponse('ブックマークを既読にできませんでした');
-    });
-
-    return buildErrorResponse('ブックマークを既読にできませんでした');
+    return buildErrorResponse(member.user.id);
 };
 
 export const readCommand = {
